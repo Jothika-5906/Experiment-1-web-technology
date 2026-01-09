@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chennai Map Highlight</title>
+<style>
+  .map-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  #chennaiMapImg {
+    display: block;
+    max-width: 600px;
+    height: auto;
+  }
+
+  /* Highlight div */
+  .highlight {
+    position: absolute;
+    border: 3px solid orange; /* border color */
+    background-color: rgba(255,165,0,0.3); /* translucent overlay */
+    display: none; /* hidden by default */
+    pointer-events: none; /* so clicks go through */
+    border-radius: 50%; /* for circle */
+  }
+</style>
+</head>
+<body>
+
+<h2>Chennai Map — Click to Highlight Places</h2>
+
+<div class="map-container">
+  <img src="chennai_map.jpg" alt="Chennai Map" usemap="#chennaiMap" id="chennaiMapImg">
+
+  <!-- highlight div -->
+  <div id="highlight" class="highlight"></div>
+</div>
+
+<map name="chennaiMap">
+  <!-- Circle hotspot -->
+  <area shape="circle" coords="461,232,35" href="#" alt="Central Chennai" data-shape="circle" data-coords="461,232,35">
+  
+  <!-- Rectangle hotspot -->
+  <area shape="rect" coords="426,232,461,265" href="#" alt="South Chennai" data-shape="rect" data-coords="426,232,461,265">
+</map>
+
+<script>
+const highlight = document.getElementById('highlight');
+const areas = document.querySelectorAll('map area');
+
+areas.forEach(area => {
+  area.addEventListener('click', e => {
+    e.preventDefault(); // prevent navigation
+
+    const shape = area.dataset.shape;
+    const coords = area.dataset.coords.split(',').map(Number);
+
+    if (shape === 'circle') {
+      const [cx, cy, r] = coords;
+      highlight.style.left = (cx - r) + 'px';
+      highlight.style.top = (cy - r) + 'px';
+      highlight.style.width = highlight.style.height = (r * 2) + 'px';
+      highlight.style.borderRadius = '50%';
+      highlight.style.display = 'block';
+    } 
+    else if (shape === 'rect') {
+      const [x1, y1, x2, y2] = coords;
+      highlight.style.left = x1 + 'px';
+      highlight.style.top = y1 + 'px';
+      highlight.style.width = (x2 - x1) + 'px';
+      highlight.style.height = (y2 - y1) + 'px';
+      highlight.style.borderRadius = '0';
+      highlight.style.display = 'block';
+    }
+  });
+});
+
+// Clicking outside removes highlight
+document.getElementById('chennaiMapImg').addEventListener('click', () => {
+  highlight.style.display = 'none';
+});
+</script>
+ 
+ <!-- Frame Section -->
+    <div>
+        <h3>Embedded Frame</h3>
+        <iframe src="https://en.wikipedia.org/wiki/Chennai"
+                width="700" height="500">
+        </iframe>
+    </div>
+
+</div>
+
+<!-- Links Section -->
+<div class="links">
+    <h3>Useful Links</h3>
+    <a href="https://www.tn.gov.in" target="_blank">Tamil Nadu Government</a>
+    <a href="https://www.chennai.nic.in" target="_blank">Chennai District</a>
+</div>
+
+</body>
+</html>
